@@ -124,7 +124,9 @@ stopResetThread = maybe (return ()) killThread . resetThreadId
 -- nanoseconds) to wait after which the allocation can succeed.
 tryAllocate :: (H.Hashable key) => key -> Rate -> Word64 -> Cache key -> IO (Maybe Word64)
 tryAllocate k r amount (Cache mv) = do
-  tb <- M.modifyMVar mv $ \CacheData {..} ->
+  tb <- M.modifyMVar mv $ \CacheData {..} -> do
+    print "inside tryAllocate. contents ="
+    print $ H.size contents
     case H.lookup k contents of
       Just tb' -> return (CacheData contents, tb')
       Nothing -> do
